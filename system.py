@@ -2,6 +2,30 @@ from datetime import datetime
 
 users = []
 
+ 
+def mainManu():
+     while True:
+      options = input("What you wanna do? 1 - Add a new user 2 - Edit a existent user 3 - Delete a user 4 - List the users 5 - Exit")
+      if options == '1':
+         addUser()
+      elif options == '2':
+         editUser()
+      elif options == '3':
+         deleteUser()
+      elif options == '4':
+         listUser()
+      elif options == '5':
+          break
+      else:
+         print("This option doesn't exist.")
+         
+mainManu()
+     
+
+
+
+
+
 def validEmail(email):
     if "@" not in email:
         return False
