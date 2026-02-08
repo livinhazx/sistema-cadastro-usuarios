@@ -66,10 +66,10 @@ print(users)
 
 def deleteUser():
 
-    emailDelete = ("Which email do you wanna delete?")
+    emailDelete = input("Which email do you wanna delete?")
     for user in users:
         if user["email"] == emailDelete:
-            users.remove(users)
+            users.remove(user)
             print("User deleted!")
             return
     print("User not found!")
