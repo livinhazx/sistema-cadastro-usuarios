@@ -1,5 +1,7 @@
 from datetime import datetime
 
+users = []
+
 def validEmail(email):
     if "@" not in email:
         return False
@@ -26,7 +28,7 @@ def addUser():
             continue
         else:
             print("Name added.")
-        
+
         email = input("What's your best e-mail? ")
         if not validEmail(email):
             print("Invalid email!")
@@ -46,7 +48,17 @@ def addUser():
             except ValueError:
                 print("Invalid format! Use the DD/MM/YYYY format.")
 
-        print("User registered!")
         
+        user = {
+            "name": name,
+            "email": email,
+            "birthdate": birthdate
+        }
+
+        users.append(user)
+        print("User registered!")
+        break
 
 addUser()
+
+print(users)
