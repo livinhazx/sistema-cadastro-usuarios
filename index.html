@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>User Manager</title>
+<style>
+:root{--bg:#0f172a;--card:#111827;--accent:#6366f1;--text:#e5e7eb;--danger:#ef4444}
+body{margin:0;font-family:system-ui;background:linear-gradient(135deg,#020617,#0f172a);color:var(--text);display:flex;justify-content:center}
+.container{width:900px;max-width:95%;padding:30px}
+h1{text-align:center;margin-bottom:20px}
+.card{background:var(--card);padding:20px;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.4);margin-bottom:20px}
+input,button{padding:10px;border-radius:10px;border:none}
+input{background:#020617;color:var(--text);width:100%;margin-bottom:10px}
+button{cursor:pointer;background:var(--accent);color:white;font-weight:600}
+button:hover{opacity:.9}
+.user{display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid #1f2937}
+.actions button{margin-left:6px}
+.delete{background:var(--danger)}
+.edit{background:#22c55e}
+.empty{text-align:center;opacity:.6;padding:20px}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>User Manager</h1>
+<div class="card">
+<h3>Add / Edit User</h3>
+<input id="name" placeholder="Name" />
+<input id="email" placeholder="Email" />
+<input id="birthdate" type="date" />
+<button onclick="saveUser()">Save</button>
+</div>
+<div class="card">
+<h3>Users</h3>
+<div id="list"></div>
+</div>
+</div>
+<script>
+let users = JSON.parse(localStorage.getItem("users")||"[]");
+let editingEmail = null;
+function render(){
+ const list=document.getElementById("list");
+ list.innerHTML="";
+ if(!users.length){list.innerHTML='<div class="empty">No users registered</div>';return}
+ users.forEach(u=>{
+  const div=document.createElement("div");
+  div.className="user";
+  div.innerHTML=`<div><b>${u.name}</b><br>${u.email}<br>${u.birthdate}</div>
+  <div class="actions">
+  <button class="edit" onclick="editUser('${u.email}')">Edit</button>
+  <button class="delete" onclick="deleteUser('${u.email}')">Delete</button>
+  </div>`;
+  list.appendChild(div);
+ })
+}
+function validEmail(email){return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)}
+function saveUser(){
+ const name=document.getElementById("name").value.trim();
+ const email=document.getElementById("email").value.trim();
+ const birthdate=document.getElementById("birthdate").value;
+ if(!name){alert("Type a name");return}
+ if(!validEmail(email)){alert("Invalid email");return}
+ if(!birthdate||new Date(birthdate)>new Date()){alert("Invalid birthdate");return}
+ if(editingEmail){
+  const u=users.find(u=>u.email===editingEmail);
+  u.name=name;u.email=email;u.birthdate=birthdate;
+  editingEmail=null;
+ }else{
+  if(users.some(u=>u.email===email)){alert("Email already exists");return}
+  users.push({name,email,birthdate});
+ }
+ localStorage.setItem("users",JSON.stringify(users));
+ document.getElementById("name").value="";
+ document.getElementById("email").value="";
+ document.getElementById("birthdate").value="";
+ render();
+}
+function editUser(email){
+ const u=users.find(u=>u.email===email);
+ document.getElementById("name").value=u.name;
+ document.getElementById("email").value=u.email;
+ document.getElementById("birthdate").value=u.birthdate;
+ editingEmail=email;
+}
+function deleteUser(email){
+ if(!confirm("Delete user?"))return;
+ users=users.filter(u=>u.email!==email);
+ localStorage.setItem("users",JSON.stringify(users));
+ render();
+}
+render();
+</script>
+</body>
+</html>
