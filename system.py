@@ -2,7 +2,40 @@ from datetime import datetime
 
 users = []
 
- 
+def nameValid():
+    while True:
+
+        name = input("What's your name? ")
+        if name.strip() == "":
+            print("Empty field! Type something.")
+
+        elif name.isdigit():
+            print("Only numbers? Type text.")
+
+        else:
+            print("Name added.")
+
+            return name
+        
+
+def validBirthdate():
+     while True:
+      birthdate = input("What's your birthdate? Type DD/MM/YYYY format: ")
+
+      try:
+            date = datetime.strptime(birthdate, "%d/%m/%Y")
+            if date > datetime.now():
+                print("Invalid date! You can't be born in the future.")
+                continue
+            print("Valid date:", birthdate)
+            return birthdate
+      
+      except ValueError:
+            print("Invalid format! Use the DD/MM/YYYY format.")
+        
+
+
+
 def mainManu():
      while True:
       options = input("What you wanna do? 1 - Add a new user 2 - Edit a existent user 3 - Delete a user 4 - List the users 5 - Exit")
@@ -18,15 +51,53 @@ def mainManu():
           break
       else:
          print("This option doesn't exist.")
-         
-mainManu()
      
 
+def editUser():
+    emailEdit = input("Which email do you wanna edit?")
 
+    for user in users:
+        if user["email"] == emailEdit:
+
+            choose = input("1-Name 2-Email 3-Birthdate 4-Exit: ")
+
+            if choose == "1":
+                user["name"] = nameValid()
+                print("Name updated!")
+            elif choose == '2':
+                print("Email updated!")
+                user["email"] = validEmailInput()
+            elif choose == '3':
+                user["birthdate"] = validBirthdate()
+                print("Birthdate updated!")
+
+            elif choose == "4":
+                break
+            else:
+                print("Invalid option")
+
+            return 
+
+    print("User not found!")
+
+
+def validEmailInput():
+    while True:
+     email = input("What's your best e-mail? ")
+
+     if  validEmail(email):
+         return email
+    
+    else:
+     print("Email invalid!")
+   
+           
 
 
 
 def validEmail(email):
+
+
     if "@" not in email:
         return False
     pieces = email.split("@")
@@ -42,50 +113,21 @@ def validEmail(email):
     return True
 
 def addUser():
-    while True:
-        name = input("What's your name? ")
-        if name.strip() == "":
-            print("Empty field! Type something.")
-            continue
-        elif name.isdigit():
-            print("Only numbers? Type text.")
-            continue
-        else:
-            print("Name added.")
 
-        email = input("What's your best e-mail? ")
-        if not validEmail(email):
-            print("Invalid email!")
-            continue
-        else:
-            print("Email valid!")
-
-        while True:
-            birthdate = input("What's your birthdate? Type DD/MM/YYYY format: ")
-            try:
-                date = datetime.strptime(birthdate, "%d/%m/%Y")
-                if date > datetime.now():
-                    print("Invalid date! You can't be born in the future.")
-                else:
-                    print("Valid date:", birthdate)
-                    break
-            except ValueError:
-                print("Invalid format! Use the DD/MM/YYYY format.")
+    name = nameValid()
+    birthdate = validBirthdate()
+    email = validEmailInput()
 
         
-        user = {
-            "name": name,
-            "email": email,
-            "birthdate": birthdate
+    user = {
+        "name": name,
+        "email": email,
+        "birthdate": birthdate
         }
 
-        users.append(user)
-        print("User registered!")
-        break
+    users.append(user)
+    print("User registered!")
 
-addUser()
-
-print(users)
 
 
 def deleteUser():
@@ -99,5 +141,6 @@ def deleteUser():
     print("User not found!")
 
 
-
+if __name__ == "__main__":
+    mainManu()
 
