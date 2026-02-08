@@ -90,8 +90,17 @@ def validEmailInput():
     
     else:
      print("Email invalid!")
-   
-           
+
+
+
+def listUser():
+    if not users:
+        print("No users registered.")
+        return
+
+    for user in users:
+        print(f'Name: {user["name"]} | Email: {user["email"]} | Birthdate: {user["birthdate"]}')
+
 
 
 
